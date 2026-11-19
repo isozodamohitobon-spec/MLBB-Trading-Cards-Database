@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Админ-панель</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- Подключаем WYSIWYG редактор Quill -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <style>
+        .form-container { max-width: 600px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        .btn-submit { background: #27ae60; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; width: 100%; margin-top: 20px;}
+        .btn-submit:hover { background: #219653; }
+        .error-message { color: red; font-size: 12px; display: none; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1 style="margin-top:0;">Добавить карточку</h1>
+        <a href="/" style="display:inline-block; margin-bottom: 20px; color: #3498db; text-decoration: none;">&larr; На главную</a>
+        
+        <form action="/admin" method="POST" id="adminForm">
+            <div class="form-group">
+                <label>Артикул (Card ID)</label>
+                <input type="text" name="code" id="cardCode" placeholder="ML-AS-R099" required>
+                <div class="error-message" id="codeError">Неверный формат! Должно быть: ML-AS-XXX</div>
+            </div>
+            <div class="form-group">
+                <label>Название скина</label>
+                <input type="text" name="name" placeholder="Dragon Hunter" required>
+            </div>
+            <div class="form-group">
+                <label>Цена (USD)</label>
+                <input type="number" step="0.01" name="price" placeholder="0.15" required>
+            </div>
+            <div class="form-group">
+                <label>Ссылка на картинку (путь)</label>
+                <input type="text" name="imageUrl" placeholder="images/r099.png">
+            </div>
+            
+            <div class="form-group">
+                <label>Описание (WYSIWYG)</label>
+                <!-- Скрытое поле, куда Quill будет сохранять HTML -->
+                <input type="hidden" name="description" id="descriptionInput">
+                <!-- Сам редактор -->
+                <div id="editor-container" style="height: 150px; background: white;"></div>
+            </div>
+
+            <div class="form-group">
+                <label>ID Героя</label>
+                <select name="heroId">
+                    {{HeroOptions}}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>ID Редкости</label>
+                <select name="rarityId">
+                    <option value="4">R (Rare)</option>
+                    <option value="2">RS (Rare Shiny)</option>
+                    <option value="1">UR (Ultra Rare)</option>
+                    <option value="3">QR (Special Card)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-submit">Сохранить в базу</button>
+        </form>
+    </div>
+
+    <!-- Подключаем скрипт Quill -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script>
+        // Инициализация редактора Quill
+        var quill = new Quill('#editor-container', {
+            theme: 'snow',
+            placeholder: 'Введите описание карточки...',
+            modules: {
+                toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }]]
+            }
+        });// Клиентская валидация с регулярным выражением
+        const form = document.getElementById('adminForm');
+        const codeInput = document.getElementById('cardCode');
+        const codeError = document.getElementById('codeError');
+
+        form.addEventListener('submit', function(e) {
+            // Регулярка: ML-AS- и 3-4 символа (буквы/цифры)
+            const regex = /^ML-AS-[A-Z0-9]{3,4}$/;
+            
+            if (!regex.test(codeInput.value)) {
+                e.preventDefault(); // Останавливаем отправку формы
+                codeError.style.display = 'block'; // Показываем ошибку
+                codeInput.style.borderColor = 'red';
+                return false;
+            } else {
+                codeError.style.display = 'none';
+                codeInput.style.borderColor = '#ccc';
+            }
+
+            // Перед отправкой переносим HTML из редактора в скрытое поле
+            document.getElementById('descriptionInput').value = quill.root.innerHTML;
+        });
+    </script>
+</body>
+</html>

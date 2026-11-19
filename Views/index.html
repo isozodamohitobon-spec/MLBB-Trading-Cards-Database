@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLBB Trading Cards Database</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <!-- Шапка сайта -->
+    <header class="top-header">
+        <div class="header-content">
+            <div class="badge">✨ MOBILE LEGENDS: BANG BANG</div>
+            <h1>MLBB Trading Cards Database</h1>
+            <p class="subtitle">
+                MLBB physical card collection prices in USD · Search by Mobile Legends card serial number
+            </p>
+            <p class="date-info">Prices updated today</p>
+        </div>
+    </header>
+
+    <!-- Статистика -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="stat-num">{{CardsCount}}</span>
+            <span class="stat-label">CARDS</span>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-num">10</span>
+            <span class="stat-label">RARITIES</span>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-num">30</span>
+            <span class="stat-label">HEROES</span>
+        </div>
+    </div>
+
+    <!-- Меню -->
+    <div class="tabs-menu">
+        <div class="tab">🔴 TikTok Live</div>
+        <div class="tab active">📁 Collection</div>
+        <div class="tab">🛒 Marketplace</div>
+        <div class="tab">🏆 Top Cards</div>
+    </div>
+
+    <!-- Поиск и фильтры -->
+    <div class="search-section">
+
+        <div class="search-input-wrapper">
+            <span class="search-icon">🔍</span>
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search skin or card ID..."
+            >
+        </div>
+
+        <div class="filter-buttons">
+
+            <button
+                class="filter-btn active"
+                id="sortAll"
+                data-sort="all">
+                All
+            </button>
+
+            <button
+                class="filter-btn"
+                id="sortPrice"
+                data-sort="price">
+                Most Expensive
+            </button>
+
+            <button
+                class="filter-btn"
+                id="sortViews"
+                data-sort="views">
+                Most Viewed
+            </button>
+
+            <select id="rarityFilter" class="filter-select">
+                <option value="">All Rarities</option>
+                <option value="UR">Ultra Rare</option>
+                <option value="RS">Rare Shiny</option>
+                <option value="QR">Special Card</option>
+                <option value="R">Rare</option>
+            </select>
+
+        </div>
+    </div>
+
+    <!-- Коллекция карточек -->
+    <div class="container">
+
+        <p class="cards-count-text">{{CardsCount}} cards</p>
+
+        <div class="card-container" id="cardGrid">
+
+            {{#each Cards}}
+            <!-- Карточки генерируются через C# -->
+            {{/each}}
+
+        </div>
+    </div>
+
+    <!-- Модальное окно -->
+    <div class="modal-overlay" id="cardModal">
+
+        <div class="modal-content">
+
+            <button
+                class="modal-close"
+                onclick="closeModal()">
+                ✕
+            </button>
+
+            <div class="modal-image-container">
+                <img
+                    id="modalImage"
+                    src=""
+                    alt="Card Image"
+                >
+            </div>
+
+            <div class="modal-body">
+
+                <div class="modal-badge-row">
+                    <span
+                        class="rarity-badge"
+                        id="modalRarityBadge">
+                        R • Rare
+                    </span>
+                </div>
+
+                <h2 id="modalTitle" class="modal-title">Eudora</h2>
+
+                <p id="modalSkin" class="modal-skin">Flame Red Lips</p>
+
+                <hr class="modal-divider">
+
+                <div class="modal-details-grid">
+
+                    <div class="detail-box">
+                        <div class="detail-label">CARD ID</div>
+                        <div class="detail-value" id="modalId"></div>
+                    </div>
+
+                    <div class="detail-box">
+                        <div class="detail-label">RARITY</div>
+                        <div class="detail-value" id="modalRarity"></div>
+                    </div>
+
+                    <div class="detail-box">
+                        <div class="detail-label">PRICE (USD)</div>
+                        <div
+                            class="detail-value price-green"
+                            id="modalPrice">
+                        </div>
+                    </div>
+
+                    <div class="detail-box">
+                        <div class="detail-label">TIMES VIEWED</div>
+                        <div class="detail-value" id="modalViews"></div>
+                    </div>
+
+                </div>
+
+                <button
+                    onclick="deleteCard()"
+                    class="btn-delete">
+                    Удалить карточку
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+
+</body>
+</html>
